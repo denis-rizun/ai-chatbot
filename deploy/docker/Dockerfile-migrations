@@ -1,0 +1,20 @@
+FROM python:3.13-slim
+
+RUN useradd -m -s /bin/bash chat-bot-migrations
+
+WORKDIR /app
+
+COPY deploy/req/migrations.txt /app/requirements.txt
+
+RUN pip install --no-cache -r requirements.txt
+
+COPY src/ /app/src/
+COPY alembic.ini /app/alembic.ini
+COPY .env /app/.env
+
+RUN chown -R chat-bot-migrations:chat-bot-migrations /app/src/infrastructure/database/migrations
+
+USER chat-bot-migrations
+ENV PYTHONPATH=/app
+
+CMD ["sh", "-c", "alembic upgrade head && tail -f /dev/null"]

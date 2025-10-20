@@ -4,7 +4,7 @@ RUN useradd -m -s /bin/bash chat-bot
 
 WORKDIR /app
 
-COPY requirements.txt /app/requirements.txt
+COPY deploy/req/api.txt /app/requirements.txt
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends gcc libpq-dev \
@@ -16,7 +16,12 @@ RUN apt-get update \
 COPY src/ /app/src/
 COPY .env /app/.env
 COPY .dockerignore /app/.dockerignore
+COPY alembic.ini /app/alembic.ini
+COPY deploy/entrypoints/api.sh /app/entrypoint.sh
+
+ENV PYTHONPATH=/app/
+RUN chmod +x /app/entrypoint.sh
 
 USER chat-bot
 
-CMD ["uvicorn", "src.main:app", "--host=0.0.0.0", "--port=8001"]
+ENTRYPOINT ["/app/entrypoint.sh"]

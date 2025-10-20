@@ -19,6 +19,7 @@ class Config(BaseSettings):
 
     API_INNER_PORT: int
     API_OUTER_PORT: int
+    API_WORKERS_AMOUNT: int
 
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
@@ -37,6 +38,15 @@ class Config(BaseSettings):
     def postgres_url(self) -> str:
         return (
             f"postgresql+asyncpg://"
+            f"{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
+            f"@{self.POSTGRES_HOST}:{self.INNER_POSTGRES_PORT}"
+            f"/{self.POSTGRES_DB}"
+        )
+
+    @cached_property
+    def alembic_postgres_url(self) -> str:
+        return (
+            f"postgresql://"
             f"{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
             f"@{self.POSTGRES_HOST}:{self.INNER_POSTGRES_PORT}"
             f"/{self.POSTGRES_DB}"
