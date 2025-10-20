@@ -15,6 +15,7 @@ class Config(BaseSettings):
     ALLOW_METHODS: list[str] = ["*"]
     ALLOW_HEADERS: list[str] = ["*"]
     ENABLE_LOGGER: bool = True
+    COMPOSE_PROJECT_NAME: str
 
     API_INNER_PORT: int
     API_OUTER_PORT: int
