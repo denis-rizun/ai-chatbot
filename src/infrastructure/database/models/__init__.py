@@ -1,5 +1,5 @@
 from .base import BaseModel
-from .source import SourceModel
 from .context import ContextModel
+from .source import SourceModel
 
-__all__ = ["BaseModel", "SourceModel", "ContextModel"]
+__all__ = ["BaseModel", "ContextModel", "SourceModel"]

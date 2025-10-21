@@ -11,7 +11,7 @@ class ContextModel(BaseModel):
     source_id: Mapped[int] = mapped_column(ForeignKey("sources.id"))
     chunk_index: Mapped[int]
     content: Mapped[str] = mapped_column(Text)
-    embedding: Mapped[Vector] = mapped_column(Vector(dim=1536))
+    embedding: Mapped[Vector] = mapped_column(Vector(dim=384))
 
     __table_args__ = (
         Index("idx_contexts_source_id", "source_id"),

@@ -4,6 +4,7 @@ from starlette.middleware.cors import CORSMiddleware
 from src.core.config import config
 from src.delivery.middlewares.session import DBSessionMiddleware
 from src.delivery.routers.health import router as health
+from src.delivery.routers.v1.context import router as context
 
 app = FastAPI(root_path="/api", title=config.PROJECT_NAME, version=config.VERSION)
 app.add_middleware(
@@ -16,3 +17,4 @@ app.add_middleware(
 app.add_middleware(DBSessionMiddleware)
 
 app.include_router(health)
+app.include_router(context)

@@ -32,7 +32,9 @@ class Config(BaseSettings):
     INNER_REDIS_PORT: int
     OUTER_REDIS_PORT: int
 
-    model_config = ConfigDict(env_file=BASE_DIR / ".env")  # noqa
+    CHATGPT_API_KEY: str
+
+    model_config = ConfigDict(env_file=BASE_DIR / ".env")
 
     @cached_property
     def postgres_url(self) -> str:
@@ -53,4 +55,4 @@ class Config(BaseSettings):
         )
 
 
-config = Config()  # noqa
+config = Config()

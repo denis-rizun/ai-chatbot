@@ -1,4 +1,4 @@
-from .redis_ import RedisSession
 from .postgres_ import PostgresSession
+from .redis_ import RedisSession
 
-__all__ = ["RedisSession", "PostgresSession"]
+__all__ = ["PostgresSession", "RedisSession"]
