@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.requests import Request
 from starlette.responses import JSONResponse
 
-from src.core.exceptions import CustomException
+from src.core.exceptions import CustomError
 from src.domain.enums.response import ResponseStatusEnum
 from src.infrastructure.dto.response import ResponseDTO
 
@@ -13,13 +13,13 @@ class ExceptionHandler:
     @classmethod
     def register(cls, app: FastAPI) -> None:
 
-        @app.exception_handler(CustomException)
-        async def custom_exception_handler(request: Request, exc: CustomException) -> None:  # noqa
+        @app.exception_handler(CustomError)
+        async def custom_exception_handler(request: Request, exc: CustomError) -> None:
             body = cls._unified_body(exc)
             return JSONResponse(content=body.model_dump(), status_code=exc.status_code)
 
     @classmethod
-    def _unified_body(cls, exc: CustomException) -> ResponseDTO:
+    def _unified_body(cls, exc: CustomError) -> ResponseDTO:
         return ResponseDTO(
             status_code=exc.status_code,
             status=cls.FAILED_STATUS,

@@ -2,7 +2,6 @@ from fastapi import APIRouter
 
 from src.delivery.helper import APIHelper
 from src.domain.entities.pipelines.inference import Inference
-from src.infrastructure.di.container import container
 from src.infrastructure.di.dependencies import ConversationPipelineDI
 from src.infrastructure.dto.conversation import ConversationDTO, ConversationQueryDTO
 from src.infrastructure.dto.response import ResponseDTO

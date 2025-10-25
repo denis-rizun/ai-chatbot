@@ -14,7 +14,12 @@ class GroqModel(IAIModel):
         self._client = AsyncOpenAI(api_key=config.GROQ_API_KEY, base_url=self._BASE_URL)
 
     async def ask(self, q: str, context: str) -> str:
-        return "all good"
+        response = await self._client.chat.completions.create(
+            model=self._MODEL_NAME,
+            messages=self._prepare_messages(q, context),
+            max_tokens=self._MAX_TOKENS
+        )
+        return response.choices[0].message.content
 
     async def embed(self, text: str) -> list[float]:
         pass
