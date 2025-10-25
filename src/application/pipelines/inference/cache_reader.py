@@ -20,7 +20,7 @@ class CacheReadStep(IPipelineStep):
             score_threshold=self.THRESHOLD
         )
         if cached:
-            ctx.answer = cached
+            ctx.answer = cached["answer"]
             ctx.metadata.is_cached = True
             ctx.metadata.is_finished = True
 

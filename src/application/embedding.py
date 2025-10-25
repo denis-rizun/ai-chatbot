@@ -10,14 +10,16 @@ class EmbeddingService(IEmbeddingService):
         self._ai_model = ai_model
 
     async def store_context(self, source_id: int, chunks: list[str]) -> list[list[float]]:
-        embeddings = await self._ai_model.embed(chunks)
-        for i, (chunk, embedding) in enumerate(zip(chunks, embeddings)):
+        embeddings = []
+        for i, chunk in enumerate(chunks):
+            embedding = await self._ai_model.embed(chunk)
             await self._repository.context.create(
                 source_id=source_id,
                 chunk_index=i,
                 content=chunk,
                 embedding=embedding,
             )
+            embeddings.append(embedding)
 
         await self._repository.commit()
         return embeddings

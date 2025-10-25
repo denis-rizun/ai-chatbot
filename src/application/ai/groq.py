@@ -8,18 +8,13 @@ from src.domain.interfaces.services.ai import IAIModel
 class GroqModel(IAIModel):
     _BASE_URL = "https://api.groq.com/openai/v1"
     _MODEL_NAME = "llama-3.1-8b-instant"
-    _MAX_TOKENS = 256
+    _MAX_TOKENS = 1000
 
     def __init__(self) -> None:
         self._client = AsyncOpenAI(api_key=config.GROQ_API_KEY, base_url=self._BASE_URL)
 
     async def ask(self, q: str, context: str) -> str:
-        response = await self._client.chat.completions.create(
-            model=self._MODEL_NAME,
-            messages=self._prepare_messages(q, context),
-            max_tokens=self._MAX_TOKENS
-        )
-        return response.choices[0].message.content
+        return "all good"
 
     async def embed(self, text: str) -> list[float]:
         pass
