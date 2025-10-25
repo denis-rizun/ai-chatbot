@@ -1,15 +1,19 @@
 services:
-
   migrations:
     build:
       context: ../../
       dockerfile: deploy/docker/Dockerfile-migrations
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      INNER_POSTGRES_PORT: ${INNER_POSTGRES_PORT}
     depends_on:
       database:
         condition: service_healthy
     volumes:
       - ../../src/infrastructure/database/migrations/versions:/app/src/infrastructure/database/migrations/versions:rw
-    restart: "no"
     networks:
       - nw
 
@@ -17,6 +21,21 @@ services:
     build:
       context: ../../
       dockerfile: deploy/docker/Dockerfile-api
+    environment:
+      API_INNER_PORT: ${API_INNER_PORT}
+      API_OUTER_PORT: ${API_OUTER_PORT}
+      API_WORKERS_AMOUNT: ${API_WORKERS_AMOUNT}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      INNER_POSTGRES_PORT: ${INNER_POSTGRES_PORT}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_USER: ${REDIS_USER}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      INNER_REDIS_PORT: ${INNER_REDIS_PORT}
+      CHATGPT_API_KEY: ${CHATGPT_API_KEY}
+      GROQ_API_KEY: ${GROQ_API_KEY}
     ports:
       - "${API_INNER_PORT}:${API_INNER_PORT}"
     depends_on:
@@ -50,12 +69,21 @@ services:
     networks:
       - nw
     environment:
-      - REDIS_PASSWORD=redis123
+      - REDIS_USER=${REDIS_USER}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_APPENDONLY=yes
       - REDIS_RDB_FILENAME=dump.rdb
       - REDIS_DIR=/data
     volumes:
       - ai_redis_data:/data
+      - ../../deploy/entrypoints/cache.sh:/post_start.sh
+    command: >
+      sh -c "
+        redis-stack-server --requirepass ${REDIS_PASSWORD} --protected-mode no &
+        sleep 2 &&
+        sh /post_start.sh &&
+        wait
+      "
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s

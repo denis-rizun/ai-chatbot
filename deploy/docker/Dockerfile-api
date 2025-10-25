@@ -14,7 +14,6 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY src/ /app/src/
-COPY .env /app/.env
 COPY .dockerignore /app/.dockerignore
 COPY alembic.ini /app/alembic.ini
 COPY deploy/entrypoints/api.sh /app/entrypoint.sh

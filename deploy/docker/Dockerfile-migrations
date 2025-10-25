@@ -10,7 +10,6 @@ RUN pip install --no-cache -r requirements.txt
 
 COPY src/ /app/src/
 COPY alembic.ini /app/alembic.ini
-COPY .env /app/.env
 
 RUN chown -R chat-bot-migrations:chat-bot-migrations /app/src/infrastructure/database/migrations
 

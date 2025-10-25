@@ -1,4 +1,4 @@
-# AI Pipeline
+# AI Chatbot
 
 Лёгкое FastAPI-приложение с WebSocket, PyTorch, PostgreSQL (pgvector) и Redis, построенное по принципу **DDD + Pipeline Architecture**.  
 Система предназначена для обработки пользовательских сообщений через последовательные этапы (pipeline): кеш → контекст → AI → ответ.  

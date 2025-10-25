@@ -8,6 +8,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 class Config(BaseSettings):
+    model_config = ConfigDict(env_file=BASE_DIR / ".env")
+
     PROJECT_NAME: str = "AI-Chatbot"
     VERSION: str = "1.0.0"
     ALLOW_ORIGINS: list[str] = ["*"]
@@ -15,27 +17,27 @@ class Config(BaseSettings):
     ALLOW_METHODS: list[str] = ["*"]
     ALLOW_HEADERS: list[str] = ["*"]
     ENABLE_LOGGER: bool = True
-    COMPOSE_PROJECT_NAME: str
+    COMPOSE_PROJECT_NAME: str = "ai-chatbot"
 
-    API_INNER_PORT: int
-    API_OUTER_PORT: int
-    API_WORKERS_AMOUNT: int
+    API_INNER_PORT: int = 8000
+    API_OUTER_PORT: int = 8000
+    API_WORKERS_AMOUNT: int = 1
 
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_DB: str
-    POSTGRES_HOST: str
-    INNER_POSTGRES_PORT: int
-    OUTER_POSTGRES_PORT: int
+    POSTGRES_USER: str = "postgres"
+    POSTGRES_PASSWORD: str = "postgres"
+    POSTGRES_DB: str = "ai-chatbot"
+    POSTGRES_HOST: str = "database"
+    INNER_POSTGRES_PORT: int = 5432
+    OUTER_POSTGRES_PORT: int = 5432
 
-    REDIS_HOST: str
-    INNER_REDIS_PORT: int
-    OUTER_REDIS_PORT: int
+    REDIS_HOST: str = "cache"
+    INNER_REDIS_PORT: int = 6379
+    OUTER_REDIS_PORT: int = 6379
+    REDIS_USER: str = "redis"
+    REDIS_PASSWORD: str = "redis"
 
-    CHATGPT_API_KEY: str
-    GROQ_API_KEY: str
-
-    model_config = ConfigDict(env_file=BASE_DIR / ".env")
+    CHATGPT_API_KEY: str = ""
+    GROQ_API_KEY: str = ""
 
     @cached_property
     def postgres_url(self) -> str:
