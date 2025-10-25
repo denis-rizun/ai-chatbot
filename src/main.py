@@ -3,7 +3,6 @@ from starlette.middleware.cors import CORSMiddleware
 
 from src.core.config import config
 from src.delivery.exception_handlers import ExceptionHandler
-from src.delivery.middlewares.session import DBSessionMiddleware
 from src.delivery.routers.health import router as health
 from src.delivery.routers.v1.context import router as context
 from src.delivery.routers.v1.conversation import router as conversation
@@ -16,7 +15,6 @@ app.add_middleware(
     allow_methods=config.ALLOW_METHODS,
     allow_headers=config.ALLOW_HEADERS,
 )
-app.add_middleware(DBSessionMiddleware)
 
 app.include_router(health)
 app.include_router(context)
