@@ -14,7 +14,7 @@ class MiniLMModel(IAIModel):
         if torch.cuda.is_available():
             self._model = self._model.to("cuda")
 
-    async def ask(self, q: str) -> str:
+    async def ask(self, q: str, context: str) -> str:
         pass
 
     async def embed(self, text: str | list[str]) -> list[float]:

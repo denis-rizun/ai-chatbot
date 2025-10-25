@@ -6,7 +6,7 @@ from src.core.config import config
 class PostgresSession:
 
     @classmethod
-    def initialize(cls, echo: bool = False, expire: bool = False) -> async_sessionmaker:
+    def initialize(cls, echo: bool = False, expire: bool = True) -> async_sessionmaker:
         engine = cls._create_engine(echo=echo)
         return async_sessionmaker(bind=engine, expire_on_commit=expire)
 

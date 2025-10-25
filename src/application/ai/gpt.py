@@ -1,5 +1,3 @@
-from typing import Any
-
 from openai import AsyncOpenAI
 
 from src.core.config import config
@@ -12,10 +10,10 @@ class GPTModel(IAIModel):
     def __init__(self) -> None:
         self._client = AsyncOpenAI(api_key=config.CHATGPT_API_KEY)
 
-    async def ask(self, q: str) -> str:
+    async def ask(self, q: str, context: str) -> str:
         pass
 
-    async def embed(self, text: str) -> Any:
+    async def embed(self, text: str) -> list[float]:
         response = await self._client.embeddings.create(
             input=text,
             model=self._EMBEDDING_MODEL

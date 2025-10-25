@@ -6,5 +6,5 @@ class ContextRequestDTO(BaseDTO):
     context: str
 
 
-class ContextResponseDTO(BaseDTO):
+class ContextDTO(BaseDTO):
     source_id: int

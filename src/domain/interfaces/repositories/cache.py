@@ -19,3 +19,16 @@ class ICacheRepository(ABC):
     @abstractmethod
     async def exists(self, key: str) -> bool:
         pass
+
+    @abstractmethod
+    async def set_hashed(self, key: str, data: dict[str, Any]) -> None:
+        pass
+
+    @abstractmethod
+    async def get_similar_vectors(
+        self,
+        vector: list[float],
+        top_k: int,
+        score_threshold: int
+    ) -> dict | None:
+        pass

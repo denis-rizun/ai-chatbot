@@ -12,8 +12,8 @@ class RedisSession:
                 host=config.REDIS_HOST,
                 port=config.INNER_REDIS_PORT,
                 decode_responses=True,
-                max_connections=10
+                max_connections=20
             )
-            cls.client = Redis(connection_pool=pool)
+            cls.client = Redis(connection_pool=pool, password="redis123")
 
         return cls.client

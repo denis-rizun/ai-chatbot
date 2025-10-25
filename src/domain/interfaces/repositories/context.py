@@ -7,5 +7,5 @@ from src.domain.types import ModelType
 class IContextRepository(IBaseRepository, ABC):
 
     @abstractmethod
-    async def get_similar(self, embedding: list[float], limit: int = 5) -> list[ModelType]:
+    async def get_similar(self, embedding: list[float], threshold: float, limit: int = 5) -> list[dict]:
         pass

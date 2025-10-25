@@ -24,4 +24,4 @@ class EmbeddingService(IEmbeddingService):
 
     async def search_similar(self, query: str, limit: int = 5) -> list[ContextModel]:
         embeddings = await self._ai_model.embed(query)
-        return await self._repository.context.get_similar(embeddings, limit)
+        return await self._repository.context.get_similar(embeddings, 0.3, limit)
