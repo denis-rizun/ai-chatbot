@@ -1,7 +1,6 @@
 from src.domain.interfaces.repositories.manager import IRepositoryManager
 from src.domain.interfaces.services.ai import IAIModel
 from src.domain.interfaces.services.embedding import IEmbeddingService
-from src.infrastructure.database.models import ContextModel
 
 
 class EmbeddingService(IEmbeddingService):
@@ -23,7 +22,3 @@ class EmbeddingService(IEmbeddingService):
 
         await self._repository.commit()
         return embeddings
-
-    async def search_similar(self, query: str, limit: int = 5) -> list[ContextModel]:
-        embeddings = await self._ai_model.embed(query)
-        return await self._repository.context.get_similar(embeddings, 0.3, limit)

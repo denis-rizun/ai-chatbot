@@ -4,22 +4,22 @@ from src.domain.interfaces.pipelines.step import IPipelineStep
 from src.domain.interfaces.repositories.manager import IRepositoryManager
 
 
-class SearchContextStep(IPipelineStep):
+class SearchContextStep(IPipelineStep[Inference]):
     THRESHOLD = 0.5
 
     def __init__(self, repository: IRepositoryManager) -> None:
         self._repository = repository
 
-    async def execute(self, ctx: Inference) -> Inference:
-        if ctx.metadata.is_finished:
-            return ctx
+    async def execute(self, entity: Inference) -> Inference:
+        if entity.metadata.is_finished:
+            return entity
 
-        found = await self._repository.context.get_similar(ctx.internal.embeddings, self.THRESHOLD)
+        found = await self._repository.context.get_similar(entity.internal.embeddings, self.THRESHOLD)
         if not found:
-            ctx.answer = NOT_IN_CONTEXT_RESPONSE
-            ctx.metadata.is_finished = True
-            return ctx
+            entity.answer = NOT_IN_CONTEXT_RESPONSE
+            entity.metadata.is_finished = True
+            return entity
 
         content = " ".join([f["content"] for f in found])
-        ctx.internal.similar = content
-        return ctx
+        entity.internal.similar = content
+        return entity

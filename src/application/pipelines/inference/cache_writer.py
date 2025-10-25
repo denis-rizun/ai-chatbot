@@ -5,7 +5,7 @@ from src.domain.interfaces.pipelines.step import IPipelineStep
 from src.domain.interfaces.repositories.manager import IRepositoryManager
 
 
-class CacheWriteStep(IPipelineStep):
+class CacheWriteStep(IPipelineStep[Inference]):
     def __init__(self, repository: IRepositoryManager) -> None:
         self._repository = repository
 
@@ -13,10 +13,14 @@ class CacheWriteStep(IPipelineStep):
     def _unique_id(self) -> str:
         return f"q:{uuid4()}"
 
-    async def execute(self, ctx: Inference) -> Inference:
-        if ctx.metadata.is_cached:
-            return ctx
+    async def execute(self, entity: Inference) -> Inference:
+        if entity.metadata.is_cached:
+            return entity
 
-        caching = {"embedding": ctx.internal.embeddings, "q": ctx.question, "answer": ctx.answer}
+        caching = {
+            "embedding": entity.internal.embeddings,
+            "q": entity.question,
+            "answer": entity.answer
+        }
         await self._repository.cache.set_hashed(self._unique_id, caching)
-        return ctx
+        return entity

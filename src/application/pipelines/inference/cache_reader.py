@@ -4,7 +4,7 @@ from src.domain.interfaces.repositories.manager import IRepositoryManager
 from src.domain.interfaces.services.ai import IAIModel
 
 
-class CacheReadStep(IPipelineStep):
+class CacheReadStep(IPipelineStep[Inference]):
     TOP_K = 1
     THRESHOLD = 0.2
 
@@ -12,17 +12,17 @@ class CacheReadStep(IPipelineStep):
         self._repository = repository
         self._ai_model = ai_model
 
-    async def execute(self, ctx: Inference) -> Inference:
-        embeddings = await self._ai_model.embed(ctx.question)
+    async def execute(self, entity: Inference) -> Inference:
+        embeddings = await self._ai_model.embed(entity.question)
         cached = await self._repository.cache.get_similar_vectors(
             vector=embeddings,
             top_k=self.TOP_K,
             score_threshold=self.THRESHOLD
         )
         if cached:
-            ctx.answer = cached["answer"]
-            ctx.metadata.is_cached = True
-            ctx.metadata.is_finished = True
+            entity.answer = cached["answer"]
+            entity.metadata.is_cached = True
+            entity.metadata.is_finished = True
 
-        ctx.internal.embeddings = embeddings
-        return ctx
+        entity.internal.embeddings = embeddings
+        return entity
