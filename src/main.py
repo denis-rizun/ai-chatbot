@@ -2,9 +2,13 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from src.core.config import config
+from src.core.exceptions import CustomException
+from src.delivery.exception_handlers import ExceptionHandler
 from src.delivery.middlewares.session import DBSessionMiddleware
+from src.delivery.middlewares.unification import UnifiedResponseMiddleware
 from src.delivery.routers.health import router as health
 from src.delivery.routers.v1.context import router as context
+from src.delivery.routers.v1.conversation import router as conversation
 
 app = FastAPI(root_path="/api", title=config.PROJECT_NAME, version=config.VERSION)
 app.add_middleware(
@@ -15,6 +19,10 @@ app.add_middleware(
     allow_headers=config.ALLOW_HEADERS,
 )
 app.add_middleware(DBSessionMiddleware)
+app.add_middleware(UnifiedResponseMiddleware)
 
 app.include_router(health)
 app.include_router(context)
+app.include_router(conversation)
+
+ExceptionHandler.register(app)
