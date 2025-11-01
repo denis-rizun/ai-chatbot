@@ -1,0 +1,28 @@
+apiVersion: v2
+name: ai-chatbot
+# Helm chart for deploying the ai-chatbot application and its local Postgres/Redis deps
+# This chart is intended for local/dev and demo environments.
+description: Helm chart for ai-chatbot (FastAPI) with PostgreSQL (pgvector) and Redis
+
+# Application version (container image tag by default)
+appVersion: "latest"
+
+# Chart version (bump on changes)
+version: 0.1.0
+
+type: application
+
+keywords:
+  - fastapi
+  - ai
+  - chatbot
+  - postgres
+  - redis
+  - pgvector
+
+maintainers:
+  - name: Denis Rizun
+    url: https://github.com/denis-rizun
+
+# Minimal Helm/K8s compatibility
+kubeVersion: ">=1.20.0-0"

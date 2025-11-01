@@ -1,0 +1,18 @@
+Thank you for installing the ai-chatbot chart!
+
+Release name: {{ .Release.Name }}
+Namespace: {{ .Values.namespace | default .Release.Namespace }}
+
+To see rendered manifests:
+  helm template {{ .Release.Name }} . -n {{ .Values.namespace | default .Release.Namespace }}
+
+To get the Service external address:
+  kubectl get svc {{ include "ai-chatbot.name" . }}-service -n {{ .Values.namespace | default .Release.Namespace }}
+
+If using Minikube, you may need:
+  minikube service {{ include "ai-chatbot.name" . }}-service -n {{ .Values.namespace | default .Release.Namespace }} --url
+
+Components installed (depending on values):
+  - ai-chatbot Deployment + Service
+  - PostgreSQL (StatefulSet + Service) [enabled={{ .Values.postgres.enabled }}]
+  - Redis (Deployment + Service)       [enabled={{ .Values.redis.enabled }}]

@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-chatbot
+  namespace: ai-chatbot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-chatbot
+  template:
+    metadata:
+      labels:
+        app: ai-chatbot
+    spec:
+      containers:
+        - name: ai-chatbot
+          image: ghcr.io/denis-rizun/ai-chatbot:latest
+          envFrom:
+            - configMapRef:
+                name: ai-chatbot-config
+            - secretRef:
+                name: ai-chatbot-secrets
+          ports:
+            - containerPort: 8001
+          readinessProbe:
+            httpGet:
+              path: /api
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api
+              port: 8001
+            initialDelaySeconds: 15
+            periodSeconds: 20
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:16
+          command: ['sh', '-c', 'until pg_isready -h postgres-service -p 5432; do sleep 2; done']
+        - name: wait-for-redis
+          image: redis:7
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ai-chatbot-secrets
+                  key: REDIS_PASSWORD
+          command:
+            - sh
+            - -c
+            - |
+              until redis-cli -h redis-service -p 6379 -a "$REDIS_PASSWORD" ping | grep PONG; do sleep 2; done
+      imagePullSecrets:
+        - name: ghcr-cred

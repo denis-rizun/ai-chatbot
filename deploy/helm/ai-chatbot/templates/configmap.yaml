@@ -1,0 +1,13 @@
+{{- if .Values.configMap.create }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMap.name }}
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+  labels:
+    {{- include "ai-chatbot.labels" . | nindent 4 }}
+data:
+  {{- range $key, $val := .Values.env.config }}
+  {{ $key }}: {{ $val | quote }}
+  {{- end }}
+{{- end }}

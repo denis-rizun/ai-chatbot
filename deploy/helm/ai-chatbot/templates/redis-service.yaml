@@ -1,0 +1,15 @@
+{{- if .Values.redis.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.redis.serviceName }}
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+  labels:
+    {{- include "ai-chatbot.labels" . | nindent 4 }}
+spec:
+  ports:
+    - port: {{ .Values.redis.service.port }}
+      targetPort: {{ .Values.redis.service.port }}
+  selector:
+    app: redis
+{{- end }}

@@ -1,0 +1,39 @@
+{{- if .Values.redis.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+  labels:
+    {{- include "ai-chatbot.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: {{ .Values.redis.image }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.secret.name }}
+          command:
+            - "redis-server"
+            - "--requirepass"
+            - "$(REDIS_PASSWORD)"
+            - "--protected-mode"
+            - "no"
+          ports:
+            - containerPort: {{ .Values.redis.service.port }}
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+      volumes:
+        - name: redis-data
+          emptyDir: {}
+{{- end }}

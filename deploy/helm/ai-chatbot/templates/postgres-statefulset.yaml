@@ -1,0 +1,42 @@
+{{- if .Values.postgres.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+  labels:
+    {{- include "ai-chatbot.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ .Values.postgres.serviceName | quote }}
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: {{ .Values.postgres.image }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.secret.name }}
+          ports:
+            - containerPort: {{ .Values.postgres.service.port }}
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data
+      spec:
+        accessModes: {{ toYaml .Values.postgres.persistence.accessModes | nindent 10 }}
+        {{- if .Values.postgres.persistence.storageClassName }}
+        storageClassName: {{ .Values.postgres.persistence.storageClassName | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.postgres.persistence.size }}
+{{- end }}

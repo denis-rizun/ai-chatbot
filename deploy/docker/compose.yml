@@ -21,6 +21,7 @@ services:
     build:
       context: ../../
       dockerfile: deploy/docker/Dockerfile-api
+    container_name: ai-chatbot
     environment:
       API_INNER_PORT: ${API_INNER_PORT}
       API_OUTER_PORT: ${API_OUTER_PORT}

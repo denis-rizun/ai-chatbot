@@ -1,0 +1,99 @@
+namespace: ai-chatbot
+createNamespace: true
+
+image:
+  repository: ghcr.io/denis-rizun/ai-chatbot
+  tag: latest
+  pullPolicy: IfNotPresent
+  pullSecrets: [] # e.g., ["ghcr-cred"]
+
+replicaCount: 1
+
+service:
+  type: LoadBalancer
+  port: 8001
+  targetPort: 8001
+
+resources: {}
+  # limits:
+  #   cpu: 500m
+  #   memory: 512Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+affinity: {}
+tolerations: []
+
+env:
+  config:
+    API_INNER_PORT: "8001"
+    API_OUTER_PORT: "8001"
+    API_WORKERS_AMOUNT: "1"
+    POSTGRES_HOST: "postgres-service"
+    INNER_POSTGRES_PORT: "5432"
+    OUTER_POSTGRES_PORT: "5433"
+    REDIS_HOST: "redis-service"
+    INNER_REDIS_PORT: "6379"
+    OUTER_REDIS_PORT: "6379"
+
+  secrets:
+    POSTGRES_USER: "postgres"
+    POSTGRES_PASSWORD: "postgres"
+    POSTGRES_DB: "chatbot"
+    REDIS_USER: "default"
+    REDIS_PASSWORD: "changeme"
+    CHATGPT_API_KEY: ""
+    GROQ_API_KEY: ""
+
+configMap:
+  create: true
+  name: ai-chatbot-config
+
+secret:
+  create: true
+  name: ai-chatbot-secrets
+
+postgres:
+  enabled: true
+  image: pgvector/pgvector:pg16
+  serviceName: postgres-service
+  service:
+    port: 5432
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 5Gi
+    storageClassName: ""
+
+redis:
+  enabled: true
+  image: redis/redis-stack-server:latest
+  serviceName: redis-service
+  service:
+    port: 6379
+  persistence:
+    enabled: false
+
+probes:
+  readiness:
+    path: /api
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  liveness:
+    path: /api
+    initialDelaySeconds: 15
+    periodSeconds: 20
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: ai-chatbot.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
